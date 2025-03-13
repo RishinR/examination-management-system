@@ -10,7 +10,6 @@ const InitiateMongoServer = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    mongoose.set("useFindAndModify", false);
     console.log("Connected to DB !!");
   } catch (e) {
     console.log(e);
