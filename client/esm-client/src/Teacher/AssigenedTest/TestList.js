@@ -11,7 +11,10 @@ export default function TestList(props) {
   const [searching, setSearching] = useState("");
 
   useEffect(() => {
-    setTests(props.tests.reverse());
+    console.log(props)
+    if(props.tests){
+      setTests(props.tests.reverse());
+    }
   }, [props]);
 
   const handleListData = (searchTerm) => {
