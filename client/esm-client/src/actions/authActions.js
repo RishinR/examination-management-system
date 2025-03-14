@@ -127,7 +127,7 @@ export const loginUser = (values) => (dispatch) => {
     body: JSON.stringify(values),
   };
 
-  fetch("/user/login", requestOptions)
+  fetch("http://localhost:5000/user/login", requestOptions)
     .then((response) => response.json())
     .then((data) => {
       if (data.token) {
@@ -153,7 +153,7 @@ export const signUpUser = (values) => (dispatch) => {
     body: JSON.stringify(values),
   };
   //console.log("Success:", values);
-  fetch("/user/signup", requestOptions)
+fetch("http://localhost:5000/user/signup", requestOptions)
     .then((response) => response.json())
     .then((data) => {
       if (data.token) {
