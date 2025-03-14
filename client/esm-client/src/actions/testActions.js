@@ -106,12 +106,13 @@ export const fetchTests = (className) => async (dispatch) => {
     },
   };
 
-  await fetch(`/student/tests/${className}`, requestOptions)
+  await fetch(`http://localhost:5000/student/tests/${className}`, requestOptions)
     .then((response) => response.json())
     .then((data) => {
       if (data?.error?.name === "TokenExpiredError") {
         dispatch(logoutUser());
       } else {
+        console.log("student Tests",data)
         dispatch(receiveTests(data.obj));
       }
     })
