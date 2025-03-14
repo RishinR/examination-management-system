@@ -1,126 +1,83 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/auth");
 const Test = require("../model/Test");
 const Teacher = require("../model/Teacher");
 const User = require("../model/User");
-require("dotenv").config();
 
-/**
- * @method - GET
- * @param - /tests
- * @description - Fetching All the tests that teacher assigned using testID
- */
+// Route to fetch all the tests assigned by a teacher using teacherId
+const mongoose = require('mongoose'); 
 
-router.get("/tests/:profileID", auth, async (req, res) => {
+router.get("/tests/:profileID", async (req, res) => {
   const profileID = req.params.profileID;
-  console.log("teacher", profileID);
+
   try {
-    await Test.find(
-      {
-        teacherId: profileID,
-      },
-      "submitBy className testName"
-    ).exec(function (err, obj) {
-      if (err) {
-        return res.status(400).json({ err });
-      } else {
-        return res.status(200).json({
-          obj,
-        });
-      }
+    // Cast the profileID to ObjectId using mongoose.Types.ObjectId
+    const teacherObjectId = new mongoose.Types.ObjectId(profileID);
+    
+
+    // Now use teacherObjectId in the query
+    const tests = await Test.find({
+      teacherId: teacherObjectId,  
     });
+
+    if (tests.length === 0) {
+      return res.status(404).json({ message: "No tests found for this teacher" });
+    }
+
+    return res.status(200).json({ tests });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send("Error in fetching Tests");
+    console.log("Error fetching tests:", err.message);
+    return res.status(500).send("Error in fetching Tests");
   }
 });
 
-/**
- * @method - GET
- * @param - /classes
- * @description - Fetching All the classes which are registered in Database
- */
 
-router.get("/classes", auth, async (req, res) => {
+
+// Route to fetch all the classes registered in the database
+router.get("/classes", async (req, res) => {
   console.log("fetch classes");
+
   try {
-    await User.find({}, "className -_id", function (err, obj) {
-      if (err) {
-        return res.status(400).json({ err });
-      } else {
-        return res.status(200).json({
-          obj,
-        });
-      }
-    });
+    const classes = await User.find({}, "className -_id");
+    return res.status(200).json({ classes });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send("Error in fetching Tests");
+    console.log("Error fetching classes:", err.message);
+    return res.status(500).send("Error in fetching Classes");
   }
 });
 
-/**
- * @method - GET
- * @param - /profile/:profileID
- * @description - Fetching Teacher Profile from database
- */
-
-router.get("/profile/:profileID", auth, async (req, res) => {
+// Route to fetch a teacher's profile using profileID
+router.get("/profile/:profileID", async (req, res) => {
   const profileID = req.params.profileID;
 
   try {
-    await Teacher.findOne({
-      _id: profileID,
-    })
-      .populate("profileInfo")
-      .exec(function (err, obj) {
-        if (err) {
-          return res.status(400).json({ err });
-        } else {
-          return res.status(200).json({
-            obj,
-          });
-        }
-      });
+    const teacherProfile = await Teacher.findOne({ _id: profileID }).populate("profileInfo").exec();
+    if (!teacherProfile) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+    return res.status(200).json({ teacherProfile });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send("Error in fetching Student Data");
+    console.log("Error fetching teacher profile:", err.message);
+    return res.status(500).send("Error in fetching Teacher Profile");
   }
 });
 
-/**
- * @method - POST
- * @param - /create-test
- * @description - Creating Test for the students using teacherID
- */
+// Route to create a test for students using teacherId
+router.post("/create-test", async (req, res) => {
+  const { teacherId, testName, category, minutes, rules, className, outOfMarks, answers, questions } = req.body;
 
-router.post("/create-test", auth, async (req, res) => {
-  const {
-    teacherId,
-    testName,
-    category,
-    minutes,
-    rules,
-    className,
-    outOfMarks,
-    answers,
-    questions,
-  } = req.body;
-  console.log(questions, answers, rules);
   try {
-    let createTest = await Test.findOne({
+    let existingTest = await Test.findOne({
       testName,
       className,
       category,
     });
-    if (createTest) {
-      return res.status(400).json({
-        msg: "Test Already Created",
-      });
+
+    if (existingTest) {
+      return res.status(400).json({ msg: "Test Already Created" });
     }
 
-    createTest = new Test({
+    const newTest = new Test({
       teacherId,
       testName,
       category,
@@ -132,135 +89,84 @@ router.post("/create-test", auth, async (req, res) => {
       questions,
     });
 
-    let data = await createTest.save();
-
-    const payload = {
-      data,
-    };
-
-    res.status(200).json({
-      payload,
-    });
+    const savedTest = await newTest.save();
+    return res.status(200).json({ test: savedTest });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send("Error in Saving");
+    console.log("Error creating test:", err.message);
+    return res.status(500).send("Error in Saving Test");
   }
 });
 
-/**
- * @method - PUT
- * @param - /update-test/:testid
- * @description - Updating Test using testID
- */
-
-router.put("/update-test/:testid", auth, async (req, res) => {
+// Route to update the questions of a specific test using testID
+router.put("/update-test/:testid", async (req, res) => {
   const testID = req.params.testid;
-  console.log(testID);
   const questionsData = req.body.questions;
+
   try {
-    const testData = await Test.findOneAndUpdate(
-      { _id: testID },
-      { questions: questionsData },
-      function (err, updatedData) {
-        if (err) {
-          return res.status(400).json({ message: "failed to update document" });
-        } else {
-          return res.status(200).json({
-            message: "questions succesfully updated",
-          });
-        }
-      }
-    );
+    const updatedTest = await Test.findByIdAndUpdate(testID, { questions: questionsData }, { new: true });
+    if (!updatedTest) {
+      return res.status(404).json({ message: "Test not found" });
+    }
+    return res.status(200).json({ message: "Questions successfully updated", updatedTest });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send("Error in Updating");
+    console.log("Error updating test:", err.message);
+    return res.status(500).send("Error in Updating Test");
   }
 });
 
-/**
- * @method - PUT
- * @param - /update-profile/:profileID
- * @description - Updating Teacher profile using profileID
- */
-
-router.put("/update-profile/:profileID", auth, async (req, res) => {
+// Route to update the teacher profile using profileID
+router.put("/update-profile/:profileID", async (req, res) => {
   const profileID = req.params.profileID;
   const { firstName, lastName, email, password, phone } = req.body;
+
   try {
-    const testData = await Teacher.findOneAndUpdate(
-      { _id: profileID },
-      { ...req.body },
-      function (err, updatedData) {
-        if (err) {
-          return res.status(400).json({ message: "failed to update profile" });
-        } else {
-          console.log(updatedData);
-          return res.status(200).json({
-            message: "profile succesfully updated",
-          });
-        }
-      }
-    );
+    const updatedProfile = await Teacher.findByIdAndUpdate(profileID, { ...req.body }, { new: true });
+    if (!updatedProfile) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+    return res.status(200).json({ message: "Profile successfully updated", updatedProfile });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send("Error in Updating Profile");
+    console.log("Error updating profile:", err.message);
+    return res.status(500).send("Error in Updating Profile");
   }
 });
 
-/**
- * @method - PUT
- * @param - /assigend-to/:testID
- * @description - Fetching classes to which the test assigned using testID
- */
-
-router.put("/assigend-to/:testID", auth, async (req, res) => {
+// Route to assign a test to a class using testID
+router.put("/assigned-to/:testID", async (req, res) => {
   const testID = req.params.testID;
   const { className } = req.body;
+
   try {
-    await Test.updateOne(
+    const updatedTest = await Test.updateOne(
       { _id: testID },
-      {
-        $addToSet: { assignedTo: [...className] },
-      },
-      function (err, updatedData) {
-        if (err) {
-          return res
-            .status(400)
-            .json({ message: "failed to update assigendStudents" });
-        } else {
-          return res.status(200).json({
-            updatedData,
-          });
-        }
-      }
+      { $addToSet: { assignedTo: { $each: className } } },
+      { new: true }
     );
+
+    if (!updatedTest.nModified) {
+      return res.status(400).json({ message: "Failed to assign test" });
+    }
+
+    return res.status(200).json({ message: "Test successfully assigned to classes", updatedTest });
   } catch (err) {
-    res.status(500).send("Error in Updating");
+    console.log("Error assigning test:", err.message);
+    return res.status(500).send("Error in Assigning Test");
   }
 });
 
-/**
- * @method - DELETE
- * @param - /delete-test/:testid
- * @description - Delete a particular test using testID
- */
-
-router.delete("/delete-test/:testid", auth, async (req, res) => {
+// Route to delete a specific test using testID
+router.delete("/delete-test/:testid", async (req, res) => {
   const testID = req.params.testid;
-  console.log(testID);
+
   try {
-    const testData = await Test.findByIdAndDelete(testID, function (err) {
-      if (err) {
-        return res.status(400).json({ message: "failed to delete document" });
-      } else {
-        return res.status(200).json({
-          message: "successfully deleted",
-        });
-      }
-    });
+    const deletedTest = await Test.findByIdAndDelete(testID);
+    if (!deletedTest) {
+      return res.status(404).json({ message: "Test not found" });
+    }
+    return res.status(200).json({ message: "Test successfully deleted" });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send("Error in Deleting");
+    console.log("Error deleting test:", err.message);
+    return res.status(500).send("Error in Deleting Test");
   }
 });
 

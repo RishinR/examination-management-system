@@ -5,46 +5,37 @@ const teacher = require("./routes/teacher");
 const student = require("./routes/student");
 const InitiateMongoServer = require("./config/db");
 const cookieParser = require("cookie-parser");
-const cors = require('cors');
+const cors = require("cors");
 var path = require("path");
-require('dotenv').config()
+require("dotenv").config();
 
 // Initiate Mongo Server
 InitiateMongoServer();
 
 const app = express();
 
-// PORT
-const PORT = process.env.PORT || 5000;
+// Middleware for POST, PUT, PATCH requests with JSON body
+app.use(bodyParser.json());  // For parsing application/json
 
-// Middleware
-app.use(bodyParser.json());
+// Middleware for other headers and cookies
 app.use(cookieParser());
 app.use(cors());
 
-
-
-/**
- * Router Middleware
- * Router - /user/*
- * * Router - /teacher/*
- * Method - *
- */
+// Your routes
 app.use("/user", user);
 app.use("/teacher", teacher);
 app.use("/student", student);
 
-
+// Serve static files for production
 if (process.env.NODE_ENV === "production") {
-  // Serve any static files
   app.use(express.static(path.join(__dirname, "/client/esm-client/build")));
-  // Handle React routing, return all requests to React app
   app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "/client/esm-client/build", "index.html"));
   });
 }
 
-
-app.listen(PORT, (req, res) => {
+// Starting the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
   console.log(`Server Started at PORT ${PORT}`);
 });
