@@ -4,6 +4,8 @@ const Student = require("../model/Student");
 const Test = require("../model/Test");
 const User = require("../model/User");
 
+const mongoose = require('mongoose'); 
+
 /**
  * @method - GET
  * @param - /profile/:profileID
@@ -45,9 +47,13 @@ router.get("/tests/:studentClass", async (req, res) => {
  */
 router.get("/attempt-tests/:studentID", async (req, res) => {
   const studentID = req.params.studentID;
+  console.log(studentID);
+  
 
   try {
-    const obj = await Student.findOne({ _id: studentID });
+    const studentObjectId = new mongoose.Types.ObjectId(studentID);
+
+    const obj = await Student.findOne({ _id: studentObjectId });
     return res.status(200).json({ obj });
   } catch (err) {
     console.log(err.message);

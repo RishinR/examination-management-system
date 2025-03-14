@@ -8,6 +8,8 @@ import "./index.css";
 
 function AssignedTests(props) {
   let { tests, isLoading, profileID, trimLength } = props;
+  console.log("Tests",tests);
+  
   if (tests)
     tests =
       tests.length > trimLength ? tests.slice(-trimLength).reverse() : tests;

@@ -84,6 +84,7 @@ export const fetchAttemptTests = (profileID) => async (dispatch) => {
         if (data?.error?.name === "TokenExpiredError") {
           dispatch(logoutUser());
         } else {
+          console.log("Attempt Test",data.obj)
           dispatch(receiveAttemptTests(data.obj));
         }
       }
