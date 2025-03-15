@@ -36,7 +36,7 @@ function TestInstruction(props) {
   })
 
   useEffect(()=>{
-    console.log(props)
+    console.log("Selected Test in Instructions: ",props.selectedTest.submitBy)
 
   },[])
 
