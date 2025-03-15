@@ -30,6 +30,7 @@ export default function TestList(props) {
     selectedData = {};
 
   const handleButtonClick = () => {
+    console.log("selectedData",selectedData[0].testName)
     props.handleSelectedTest(selectedData);
     history.push(
       `/result/${selectedData.testName?.replace(/\s+/g, "-").toLowerCase()}`
@@ -43,7 +44,7 @@ export default function TestList(props) {
     selectRef = e.currentTarget;
     e.currentTarget.classList.add("selected__test");
     selectedData = tests[index];
-    //console.log();
+    console.log("tests",tests);
   };
 
   return (

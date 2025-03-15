@@ -5,8 +5,9 @@ import "./ShowResult.css";
 import Chart from "react-google-charts";
 
 function ShowResult(props) {
-  const { testName, date } = props.selectedTest;
-  const testInfo = props.selectedTest[0];
+  console.log(props.selectedTest[0])
+  const { testName, date } = props.selectedTest[0];
+  const testInfo = props.selectedTest[0][0];
   let marks,
     name,
     rightAnswers,
