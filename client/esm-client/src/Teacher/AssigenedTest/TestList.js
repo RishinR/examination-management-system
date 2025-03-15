@@ -99,10 +99,19 @@ export default function TestList(props) {
                       </p>
                       <div className="test__time">
                         <p className="time start">
-                          Published On: Oct 26 2020 12:14PM
+                        
                         </p>
+                        {test.attempted?
+                          <p className="time start">
+                            Attempted
+                          </p>
+                          :
+                          <p className="time rnd">
+                            Not Attempted
+                          </p>
+                        }
                         <p className="time end">
-                          Attempted On: Oct 29 2020 11:50PM
+                          Assigned To: {test.className}
                         </p>
                       </div>
                     </div>
