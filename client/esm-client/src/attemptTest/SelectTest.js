@@ -9,7 +9,9 @@ function SelectTest(props) {
   const { tests, studentClassName, profileID } = props;
 
   const handleSelectedTest =(testData)=>{
+      console.log("Selected Test Data:", testData); 
       props.selectedTest(testData);
+      console.log("handleSelectedTest",testData)
   }
 
   useEffect(() => {

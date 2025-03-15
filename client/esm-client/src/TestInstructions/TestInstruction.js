@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Row, Modal, Col, Button } from "antd";
 import { connect } from "react-redux";
 import "./TestInstruction.css";
@@ -34,6 +34,11 @@ function TestInstruction(props) {
       attempted=true
     }
   })
+
+  useEffect(()=>{
+    console.log(props)
+
+  },[])
 
   const handleButtonClick = () => {
     confirm({

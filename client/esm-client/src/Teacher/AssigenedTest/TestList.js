@@ -46,7 +46,7 @@ export default function TestList(props) {
     selectRef = e.currentTarget;
     e.currentTarget.classList.add("selected__test");
     selectedData = tests[index];
-    console.log(selectedData);
+    console.log("Selected",selectedData);
     //console.log();
   };
 
