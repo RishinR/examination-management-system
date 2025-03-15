@@ -32,17 +32,16 @@ export const fetchClasses = (values) => (dispatch) => {
       Authorization: localStorage.getItem("token"),
     },
   };
-  fetch("/teacher/classes", requestOptions)
+  fetch("http://localhost:5000/teacher/classes", requestOptions)
     .then((response) => response.json())
     .then((data) => {
-      if (data?.error?.name === "TokenExpiredError") {
-        dispatch(logoutUser());
-      } else {
-        const filteredDupicates = data.obj.filter(
+      
+        const filteredDupicates = data.classes.filter(
           (v, i, a) => a.findIndex((t) => t.className === v.className) === i
         );
+        
         dispatch(receiveClasses(filteredDupicates));
-      }
+
     })
     .catch((error) => {
       console.log(error);

@@ -30,7 +30,7 @@ function Classes(props) {
         {!isLoading && classesList ? (
           <ul className="left__body__list__ul">
             {classesList.map((individualClass, index) => (
-              <Link to="/attempt-test" key={index}>
+              <div>
                 <li className="left__body__test">
                   <div className="test__index">
                     <p className="index__box red__index">{index + 1}</p>
@@ -43,7 +43,7 @@ function Classes(props) {
                     <HiClipboardCopy />
                   </div>
                 </li>
-              </Link>
+              </div>
             ))}
           </ul>
         ) : (
