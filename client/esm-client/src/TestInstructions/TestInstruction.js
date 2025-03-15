@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Modal, Col, Button } from "antd";
+import { Row, Modal, Col, Button, Tooltip } from "antd";
 import { connect } from "react-redux";
 import "./TestInstruction.css";
 import { FaArrowCircleRight } from "react-icons/fa";
@@ -37,6 +37,7 @@ function TestInstruction(props) {
 
   // State to manage the 'Continue' button enabled/disabled status
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [tooltipMessage, setTooltipMessage] = useState('');
 
   // Get profileID from localStorage and check if it matches
   const localStorageProfileID = localStorage.getItem('profileID');
@@ -44,9 +45,14 @@ function TestInstruction(props) {
   useEffect(() => {
     // Check if profileID matches with the selected test submitBy[0][0].profileID
     if (submitBy && submitBy[0] && submitBy[0][0]?.profileID === localStorageProfileID) {
-      setIsButtonDisabled(true); // Disable the button if profileID matches
+      setIsButtonDisabled(true);
+      setTooltipMessage('You have already submitted this test.');
+    } else if (attempted) {
+      setIsButtonDisabled(true);
+      setTooltipMessage('You have already attempted this test.');
     } else {
-      setIsButtonDisabled(attempted); // Disable the button if the test is already attempted
+      setIsButtonDisabled(false);
+      setTooltipMessage('');
     }
   }, [submitBy, localStorageProfileID, testName, attempted]);
 
@@ -183,13 +189,18 @@ function TestInstruction(props) {
                       </div>
                     </div>
                     <div className="select__button">
-                      <Button
-                        type="primary"
-                        onClick={handleButtonClick}
-                        disabled={isButtonDisabled}
+                      <Tooltip
+                        title={tooltipMessage}
+                        visible={isButtonDisabled}
                       >
-                        Continue
-                      </Button>
+                        <Button
+                          type="primary"
+                          onClick={handleButtonClick}
+                          disabled={isButtonDisabled}
+                        >
+                          Continue
+                        </Button>
+                      </Tooltip>
                     </div>
                   </div>
                 </Col>
