@@ -24,6 +24,7 @@ const selectAssignedTest = (testData) => {
 };
 
 export const selectedTest = (data) => (dispatch) => {
+  console.log("data",data)
   dispatch(selectTest(data));
 };
 

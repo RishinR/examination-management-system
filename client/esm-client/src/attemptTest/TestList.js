@@ -9,7 +9,7 @@ export default function TestList(props) {
   const [tests, setTests] = useState([]);
   const [searchTests, setSearchTests] = useState([]);
   const [searching, setSearching] = useState("");
-  const [selectedTest, setSelectedTest] = useState(null);
+  const [selectedTest, setSelectedTest] = useState(null); // Use state to track selected test
 
   useEffect(() => {
     setTests(props.tests.reverse());
@@ -25,24 +25,21 @@ export default function TestList(props) {
     }
   };
 
-  let selectRef,
-    selectedData = {};
-
   const handleButtonClick = () => {
-    props.handleSelectedTest(selectedData);
-    history.push("/test-instructions");
+    // Now passing the state value of selectedTest
+    if (selectedTest) {
+      props.handleSelectedTest(selectedTest);
+      history.push("/test-instructions");
+      console.log("Selected Test Data:", selectedTest); // Log selected test data
+    }
   };
 
   const handleSelectTest = (e, index) => {
-    if (selectRef) {
-      selectRef.classList.remove("selected__test");
-    }
-    selectRef = e.currentTarget;
-    e.currentTarget.classList.add("selected__test");
-    selectedData = tests[index];
-    setSelectedTest(tests[index]);
+    // Set the selected test using useState
+    const test = tests[index];
+    setSelectedTest(test); // Update the state with the selected test
 
-    //console.log();
+    console.log("Selected Test:", test);
   };
 
   return (
@@ -63,18 +60,12 @@ export default function TestList(props) {
                     <div
                       key={index}
                       className={`test__wrapper`}
-                      onClick={(e) => {
-                        handleSelectTest(e, index);
-                      }}
+                      onClick={(e) => handleSelectTest(e, index)}
                     >
-                      <p className="select__test" key={index}>
-                        {test.testName}
-                      </p>
+                      <p className="select__test">{test.testName}</p>
                       <div className="test__time">
                         <p className="time start">Duration: {test.minutes} min</p>
-                        <p className="time end">Max Marks: {test.outOfMarks}
-                  
-                        </p>
+                        <p className="time end">Max Marks: {test.outOfMarks}</p>
                       </div>
                     </div>
                   ))
@@ -83,13 +74,9 @@ export default function TestList(props) {
                     <div
                       key={index}
                       className={`test__wrapper`}
-                      onClick={(e) => {
-                        handleSelectTest(e, index);
-                      }}
+                      onClick={(e) => handleSelectTest(e, index)}
                     >
-                      <p className="select__test" key={index}>
-                        {test.testName}
-                      </p>
+                      <p className="select__test">{test.testName}</p>
                       <div className="test__time">
                         <p className="time start">Duration: {test.minutes} min</p>
                         <p className="time end">Max Marks: {test.outOfMarks}</p>
@@ -144,7 +131,7 @@ export default function TestList(props) {
           </div>
         </div>
         <div className="select__button">
-         <Button
+          <Button
             type="primary"
             onClick={handleButtonClick}
             disabled={!selectedTest} // Disable button if no test is selected
