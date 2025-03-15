@@ -6,13 +6,15 @@ export default function StudentStatus(props) {
   const student = props.student;
   const className = props.className;
   const testName = props.testName;
+  console.log(props.student[0]);
+  
   return (
     <>
       <Col className="gutter-row gutter-col-adder" sm={24} xs={24} md={6} lg={6}>
         <div className="student__status__wrapper">
           <div className="status__header">
             <p className="status__header__heading">
-              {student.firstName.toUpperCase()} {student.lastName.toUpperCase()}
+              {student[0].firstName.toUpperCase()} {student[0].lastName.toUpperCase()}
             </p>
           </div>
           <div className="student__status__body">
@@ -21,26 +23,26 @@ export default function StudentStatus(props) {
             </div>
             <div className="status__test__total">
               Total Marks:{" "}
-              <span className="status__testname">{student.totalMarks}</span>
+              <span className="status__testname">{student[0].totalMarks}</span>
             </div>
             <div className="status__test__obtained">
               Obtained Marks:{" "}
-              <span className="status__testname">{student.correct}</span>
+              <span className="status__testname">{student[0].correct}</span>
             </div>
             <div className="status__test__correct">
               Correct Answers:{" "}
               <span className="status__testname success-wihtoutFont">
-                {student.correct}
+                {student[0].correct}
               </span>
             </div>
             <div className="status__test__wrong">
               Wrong Answers:{" "}
-              <span className="status__testname danger">{student.wrong}</span>
+              <span className="status__testname danger">{student[0].wrong}</span>
             </div>
             <div className="status__test__unanswered">
               Not Answered:{" "}
               <span className="status__testname primary-wihtoutFont">
-                {student.unanswered}
+                {0}
               </span>
             </div>
           </div>

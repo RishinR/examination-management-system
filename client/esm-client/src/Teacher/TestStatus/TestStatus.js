@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import StudentStatus from "./StudentStatus";
 
 function TestStatus(props) {
-  console.log(props.selectedTest);
+  console.log("selected Test",props.selectedTest);
   const style = { background: "#0092ff", padding: "8px 0" };
   const students = props.selectedTest.submitBy;
   const className = props.selectedTest.className;
