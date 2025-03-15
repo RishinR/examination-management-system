@@ -69,8 +69,10 @@ export default function TestList(props) {
                         {test.testName}
                       </p>
                       <div className="test__time">
-                        <p className="time start">Start:t 26 2020 12:14PM</p>
-                        <p className="time end">End: Oct 29 2020 11:50PM</p>
+                        <p className="time start">Duration: {test.minutes} min</p>
+                        <p className="time end">Max Marks: {test.outOfMarks}
+                  
+                        </p>
                       </div>
                     </div>
                   ))
@@ -87,8 +89,8 @@ export default function TestList(props) {
                         {test.testName}
                       </p>
                       <div className="test__time">
-                        <p className="time start">Time: {test.minutes} min</p>
-                        <p className="time end">Total Marks: {test.outOfMarks}</p>
+                        <p className="time start">Duration: {test.minutes} min</p>
+                        <p className="time end">Max Marks: {test.outOfMarks}</p>
                       </div>
                     </div>
                   ))
