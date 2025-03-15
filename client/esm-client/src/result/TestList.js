@@ -70,7 +70,7 @@ export default function TestList(props) {
                       }}
                     >
                       <p className="select__test" key={index}>
-                        {test.testName}
+                        {test[0].testName}
                       </p>
                       <div className="test__time">
                         <p className="time start">
@@ -92,7 +92,7 @@ export default function TestList(props) {
                       }}
                     >
                       <p className="select__test" key={index}>
-                        {test.testName}
+                        {test[0].testName}
                       </p>
                       <div className="test__time">
                         <p className="time start">
