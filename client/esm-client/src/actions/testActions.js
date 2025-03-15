@@ -206,7 +206,7 @@ export const fetchTeacherTests = (profileID) => async (dispatch) => {
         if (data?.error?.name === "TokenExpiredError") {
           dispatch(logoutUser());
         } else {
-          dispatch(receiveTeacherTests(data.obj));
+          dispatch(receiveTeacherTests(data.tests));
         }
       }
     })

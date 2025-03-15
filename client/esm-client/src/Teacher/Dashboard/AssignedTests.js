@@ -16,7 +16,7 @@ function AssignedTests(props) {
 
   useEffect(() => {
     props.fetchTests(profileID);
-    console.log("fired");
+    console.log("fired",props);
   }, []);
 
   return (
