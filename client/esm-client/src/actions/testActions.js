@@ -1,3 +1,4 @@
+import attemptedTestReducer from "../reducers/attemptedTestReducer";
 import { logoutUser } from "./authActions";
 export const FETCH_TEST_REQUEST = "FETCH_TEST_REQUEST";
 export const FETCH_TEST_SUCCESS = "FETCH_TEST_SUCCESS";
@@ -84,7 +85,7 @@ export const fetchAttemptTests = (profileID) => async (dispatch) => {
         if (data?.error?.name === "TokenExpiredError") {
           dispatch(logoutUser());
         } else {
-          console.log("Attempt Test",data.obj)
+          console.log("Attempted Test",data.obj)
           dispatch(receiveAttemptTests(data.obj));
         }
       }

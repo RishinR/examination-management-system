@@ -11,6 +11,8 @@ export default function TestList(props) {
   const [searching, setSearching] = useState("");
 
   useEffect(() => {
+    console.log("props.tests",props);
+    
     setTests(props.tests.reverse());
   }, [props]);
 

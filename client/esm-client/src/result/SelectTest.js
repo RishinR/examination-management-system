@@ -4,6 +4,7 @@ import { selectedTestResult } from "../actions/selectActions";
 import { connect } from "react-redux";
 import "./SelectTest.css";
 import TestList from "./TestList";
+import Profile from "../profile/Profile";
 
 function SelectTest(props) {
   const { tests, profileID } = props;
@@ -14,7 +15,8 @@ function SelectTest(props) {
 
   useEffect(() => {
     props.fetchTests(profileID);
-  }, []);
+    console.log("SelectTests",props)
+  }, [profileID]);
 
   return (
     <>
@@ -26,6 +28,8 @@ function SelectTest(props) {
 }
 
 const mapStateToProps = (state) => {
+  console.log("state",state.tests);
+  
   return {
     tests: state.tests.attemptedTest,
   };

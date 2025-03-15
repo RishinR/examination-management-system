@@ -74,7 +74,7 @@ export default function (state = initialState, action) {
         ...state,
         isFetching: false,
         isLoadingAttemptedTest: false,
-        attemptedTest: action.tests[0].attemptedTest,
+        attemptedTest: action.tests.attemptedTest,
       };
 
     case FETCH_TEST_FAILURE:
