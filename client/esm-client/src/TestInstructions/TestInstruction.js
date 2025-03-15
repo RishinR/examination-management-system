@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Modal, Col, Button } from "antd";
 import { connect } from "react-redux";
 import "./TestInstruction.css";
@@ -7,10 +7,9 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 
 function TestInstruction(props) {
-  //console.log(props.selectedTest);
   const history = useHistory();
   const { confirm } = Modal;
-  const { tests} = props;
+  const { tests } = props;
   const {
     outOfMarks,
     questions,
@@ -20,33 +19,43 @@ function TestInstruction(props) {
     testName,
     rules,
     _id: testID,
+    submitBy
   } = props.selectedTest;
 
-  let testRules, attempted=false;
+  let testRules, attempted = false;
 
   if (rules) {
     testRules = rules;
   }
-  
 
-  tests.map((test, index)=>{
-    if(test.testName === testName){
-      attempted=true
+  // Check if the test has been attempted
+  tests.map((test, index) => {
+    if (test.testName === testName) {
+      attempted = true;
     }
-  })
+  });
 
-  useEffect(()=>{
-    console.log("Selected Test in Instructions: ",props.selectedTest.submitBy)
+  // State to manage the 'Continue' button enabled/disabled status
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  },[])
+  // Get profileID from localStorage and check if it matches
+  const localStorageProfileID = localStorage.getItem('profileID');
+
+  useEffect(() => {
+    // Check if profileID matches with the selected test submitBy[0][0].profileID
+    if (submitBy && submitBy[0] && submitBy[0][0]?.profileID === localStorageProfileID) {
+      setIsButtonDisabled(true); // Disable the button if profileID matches
+    } else {
+      setIsButtonDisabled(attempted); // Disable the button if the test is already attempted
+    }
+  }, [submitBy, localStorageProfileID, testName, attempted]);
 
   const handleButtonClick = () => {
     confirm({
       title: "Do you give test now?",
       icon: <ExclamationCircleOutlined />,
-      content: "Once you click OK , timer will start!",
+      content: "Once you click OK, the timer will start!",
       onOk() {
-        // console.log(props.selectedTest);
         console.log("OK");
         history.push("/start-test");
       },
@@ -146,8 +155,8 @@ function TestInstruction(props) {
                           Previous
                         </Button>
                         <p className="button__description">
-                          Next: By clicking Next button next question will
-                          appear to user
+                          Previous: By clicking Previous button previous
+                          question will appear to user
                         </p>
                       </div>
                       <div className="navigation__buttons__Feature">
@@ -158,8 +167,7 @@ function TestInstruction(props) {
                           Flag
                         </Button>
                         <p className="button__description">
-                          Flag: By clicking Next button next question will
-                          appear to user
+                          Flag: Mark this question to revisit later
                         </p>
                       </div>
                       <div className="navigation__buttons__Feature">
@@ -170,8 +178,7 @@ function TestInstruction(props) {
                           End Test
                         </Button>
                         <p className="button__description">
-                          End Test: By clicking Next button next question will
-                          appear to user
+                          End Test: Finish the test early
                         </p>
                       </div>
                     </div>
@@ -179,7 +186,7 @@ function TestInstruction(props) {
                       <Button
                         type="primary"
                         onClick={handleButtonClick}
-                        disabled={attempted}
+                        disabled={isButtonDisabled}
                       >
                         Continue
                       </Button>
@@ -198,7 +205,7 @@ function TestInstruction(props) {
 const mapStateToProps = (state) => {
   return {
     selectedTest: state.selectedTest.selectedTestData,
-     tests: state.tests.attemptedTest,
+    tests: state.tests.attemptedTest,
   };
 };
 
