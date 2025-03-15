@@ -9,6 +9,7 @@ export default function TestList(props) {
   const [tests, setTests] = useState([]);
   const [searchTests, setSearchTests] = useState([]);
   const [searching, setSearching] = useState("");
+  const [selectedTest, setSelectedTest] = useState(null);
 
   useEffect(() => {
     setTests(props.tests.reverse());
@@ -39,6 +40,7 @@ export default function TestList(props) {
     selectRef = e.currentTarget;
     e.currentTarget.classList.add("selected__test");
     selectedData = tests[index];
+    setSelectedTest(tests[index]);
 
     //console.log();
   };
@@ -142,7 +144,11 @@ export default function TestList(props) {
           </div>
         </div>
         <div className="select__button">
-          <Button type="primary" onClick={handleButtonClick}>
+         <Button
+            type="primary"
+            onClick={handleButtonClick}
+            disabled={!selectedTest} // Disable button if no test is selected
+          >
             Continue
           </Button>
         </div>
