@@ -47,6 +47,12 @@ export default function TestList(props) {
     console.log("selected tests",tests);
   };
 
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp); // Convert timestamp to date object
+    return date.toLocaleString(); // Formats the date as "MM/DD/YYYY, HH:mm AM/PM"
+  };
+
+
   return (
     <>
       <div className="select__test__wrapper">
@@ -74,10 +80,7 @@ export default function TestList(props) {
                       </p>
                       <div className="test__time">
                         <p className="time start">
-                          Published On: Oct 26 2020 12:14PM
-                        </p>
-                        <p className="time end">
-                          Attempted On: Oct 29 2020 11:50PM
+                          Published On : {formatDate(test[0].date)}
                         </p>
                       </div>
                     </div>
@@ -96,10 +99,7 @@ export default function TestList(props) {
                       </p>
                       <div className="test__time">
                         <p className="time start">
-                          Published On: Oct 26 2020 12:14PM
-                        </p>
-                        <p className="time end">
-                          Attempted On: Oct 29 2020 11:50PM
+                          Published On : {formatDate(test[0].date)}
                         </p>
                       </div>
                     </div>
